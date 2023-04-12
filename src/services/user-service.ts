@@ -1,3 +1,4 @@
+import FollowModel from '../models/follow-model';
 import UserModel, { IUser } from '../models/user-model';
 import bcrypt from 'bcrypt';
 
@@ -8,8 +9,6 @@ class UserService {
     update = async (_id: string, data: Partial<IUser>) => await UserModel.updateOne({ _id }, data);
 
     findOne = async (filter: any) => await UserModel.findOne(filter);
-
-    findCount = async (filter: any) => await UserModel.countDocuments(filter);
 
     verifyPassword = async (password: string, hashPassword: string) => await bcrypt.compare(password, hashPassword);
 

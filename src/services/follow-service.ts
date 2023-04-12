@@ -10,6 +10,8 @@ class FollowService {
 
     deleteOne = async (filter: any) => await FollowModel.deleteOne(filter);
 
+    findCount = async (filter: any) => await FollowModel.countDocuments(filter);
+
 }
 
 export default new FollowService;

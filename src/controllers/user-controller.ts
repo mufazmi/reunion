@@ -17,9 +17,9 @@ class UserController {
         const { id } = req.user;
         const data : IUser | null = await userService.findOne({ _id: id });
 
-        const followers = await userService.findCount({ toUser: id });
+        const followers = await followService.findCount({ toUser: id });
 
-        const followings = await userService.findCount({ fromUser: id });
+        const followings = await followService.findCount({ fromUser: id });
 
         const response = new UserDto(data!)
         
