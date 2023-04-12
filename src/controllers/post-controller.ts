@@ -4,9 +4,8 @@ import responseSuccess from "../utils/response";
 import ErrorHandler from "../utils/error-handler";
 import Messages from '../utils/messages';
 import postService from "../services/post-service";
-import ProductDto from "../dtos/post-dto";
-import { AuthRequest } from "../interfaces/interface";
 import PostDto from "../dtos/post-dto";
+import { AuthRequest } from "../interfaces/interface";
 import { IPost } from "../models/post-model";
 import { Types } from "mongoose";
 
@@ -33,7 +32,7 @@ class PostController {
 
     findAll = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const data = await postService.findAll({});
-        const response = data.map((e) => new ProductDto(e));
+        const response = data.map((e) => new PostDto(e));
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: response }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 
@@ -52,8 +51,10 @@ class PostController {
     destroy = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
         const {id:userId} = req.user;
+
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
         const data = await postService.deleteOne({ _id:id,userId});
         return data.deletedCount ? responseSuccess({ res: res, message: Messages.POST.POST_DELATED }) : next(ErrorHandler.notFound(Messages.POST.POST_DELETE_FAILED));
     }
