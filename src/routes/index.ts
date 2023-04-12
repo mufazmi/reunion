@@ -17,6 +17,10 @@ router.post('/all_post',auth,am(postController.findAll));
 //User
 router.get('/user',auth,am(userController.user))
 
+//follow
+router.get('/follow/:id',auth,am(userController.user))
+router.get('/unfollow/:id',auth,am(userController.user))
+
 
 
 export default router

@@ -8,14 +8,22 @@ import { AuthRequest } from '../interfaces/interface';
 const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authorization = req.headers.authorization;
 
+  console.log({ authorization })
+
   if (!authorization)
     return next(ErrorHandler.unAuthorized());
   const accessToken = authorization!.split(' ')[1];
+  console.log({ accessToken })
+
 
   try {
     const tokenUser = tokenService.verifyAccessToken(accessToken);
+
+    console.log({ tokenUser })
     if (!tokenUser)
       return next(ErrorHandler.unAuthorized());
+
+
 
     //@ts-ignore
     req.user = tokenUser;

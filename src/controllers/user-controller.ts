@@ -7,6 +7,7 @@ import FollowModel, { IFollow } from "../models/follow-model";
 import followService from "../services/follow-service";
 import { Types } from "mongoose";
 import userService from "../services/user-service";
+import UserDto from "../dtos/user-dto";
 
 
 class FollowController {
@@ -14,7 +15,7 @@ class FollowController {
     user = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.user;
         const data = await userService.findOne({ _id:id });
-        return data ? responseSuccess({ res: res, message: Messages.USER.NOT_FOUND, data: data }) : next(ErrorHandler.notFound(Messages.USER.FOUND));
+        return data ? responseSuccess({ res: res, message: Messages.USER.FOUND, data: new UserDto(data) }) : next(ErrorHandler.notFound(Messages.USER.FOUND));
     }
 
     follow = async (req: AuthRequest, res: Response, next: NextFunction) => {
