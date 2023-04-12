@@ -10,6 +10,8 @@ import { IPost } from "../models/post-model";
 import { Types } from "mongoose";
 import LikeModel, { ILike } from "../models/like-model";
 import likeService from "../services/like-service";
+import commentService from "../services/comment-service";
+import CommentDto from "../dtos/comment-dto";
 
 
 class PostController {
@@ -34,7 +36,16 @@ class PostController {
 
     findAll = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const data = await postService.findAll({});
-        const response = data.map((e) => new PostDto(e));
+
+        const postPromise = data.map(async (e) => {
+            const post = new PostDto(e);
+            post.likes = await likeService.findCount({ postId: e._id });
+            post.comments = (await commentService.findAll({ postId: e._id })).map((f)=> new CommentDto(f));
+            return post;
+        })
+        
+        const response = await Promise.all(postPromise);
+
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: response }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 

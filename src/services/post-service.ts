@@ -10,6 +10,8 @@ class PostService {
 
     findAll = async (filter: any) => await PostModel.find(filter);
 
+    findCount = async (filter:any) => await PostModel.countDocuments(filter);
+
     deleteOne = async (filter:any) => await PostModel.deleteOne(filter);
 
 }

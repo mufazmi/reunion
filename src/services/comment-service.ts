@@ -8,6 +8,8 @@ class CommentService {
 
     findOne = async (filter: any) => await CommentModel.findOne(filter);
 
+    findAll = async (filter: any) => await CommentModel.find(filter);
+
 }
 
 export default new CommentService;

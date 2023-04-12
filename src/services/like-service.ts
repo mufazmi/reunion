@@ -10,10 +10,7 @@ class LikeService {
 
     deleteOne = async (filter:any) => await LikeModel.deleteOne(filter);
 
-    findLikesCount = async (filter:any) => await LikeModel.aggregate([
-        {$match:{...filter}},
-        {$group:{_id:"$postId" ,count:{$sum:1}}}
-    ]);
+    findCount = async (filter:any) => await LikeModel.countDocuments(filter);
 
 }
 
