@@ -48,7 +48,10 @@ class Messages{
 
       UNLIKE_ALREADY:'You Already Unliked This Post',
       UNLIKE_SUCCESS:'Post Unliked Successfully',
-      UNLIKE_FAILED : 'Oops..! Failed To Unlike This Post'
+      UNLIKE_FAILED : 'Oops..! Failed To Unlike This Post',
+      
+      COMMENT_SUCCESS:'Comment Posted',
+      COMMENT_FAILED : 'Oops..! Failed To Post Your Comment'
     }
     
     static FOLLOW = {

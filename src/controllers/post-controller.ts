@@ -105,6 +105,34 @@ class PostController {
         return data.deletedCount ? responseSuccess({ res: res, message: Messages.POST.UNLIKE_SUCCESS }) : next(ErrorHandler.serverError(Messages.POST.UNLIKE_FAILED));
     }
 
+    createComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        const { id: userId } = req.user;
+        const { id } = req.params
+
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
+        const post: IPost | null = await postService.findOne({ _id: id, userId });
+
+        if (!post)
+            return next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND))
+
+        const payload: Partial<ILike> = {
+            userId: userId,
+            postId: new Types.ObjectId(id)
+        }
+
+        const isAlreadyLiked: ILike | null = await likeService.findOne(payload);
+
+        if (isAlreadyLiked)
+            return next(ErrorHandler.forbidden(Messages.POST.LIKE_ALREADY))
+
+        const data: ILike | null = await likeService.create(new LikeModel(payload));
+
+        return data ? responseSuccess({ res: res, message: Messages.POST.LIKE_SUCCESS }) : next(ErrorHandler.serverError(Messages.POST.LIKE_FAILED));
+    }
+
+
 }
 
 export default new PostController
