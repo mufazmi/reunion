@@ -8,6 +8,7 @@ import followService from "../services/follow-service";
 import { Types } from "mongoose";
 import userService from "../services/user-service";
 import UserDto from "../dtos/user-dto";
+import { IUser } from "../models/user-model";
 
 
 class UserController {
@@ -25,7 +26,7 @@ class UserController {
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
-        const user = await userService.findOne({ _id: id});
+        const user: IUser | null = await userService.findOne({ _id: id });
 
         if (!user)
             return next(ErrorHandler.notFound(Messages.USER.NOT_FOUND))
@@ -35,7 +36,7 @@ class UserController {
             toUser: new Types.ObjectId(id)
         }
 
-        const isAlreadyFollowed = await followService.findOne(payload);
+        const isAlreadyFollowed: IFollow | null = await followService.findOne(payload);
 
         if (id.toString() === userId.toString())
             return next(ErrorHandler.forbidden(Messages.USER.FOLLOW_SELF))
@@ -43,7 +44,7 @@ class UserController {
         if (isAlreadyFollowed)
             return next(ErrorHandler.forbidden(Messages.USER.FOLLOW_ALREADY))
 
-        const data = await followService.create(new FollowModel(payload));
+        const data: IFollow | null = await followService.create(new FollowModel(payload));
         console.log("Follow Data is", data);
         return data ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_CREATED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_CREATION_FAILED));
     }
@@ -51,8 +52,8 @@ class UserController {
 
     unfollow = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
-        const { id:userId } = req.user;
-        
+        const { id: userId } = req.user;
+
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
@@ -62,7 +63,9 @@ class UserController {
         }
 
         const data = await followService.deleteOne(payload);
-        return data ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_DELETED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_DELETE_FAILED));
+
+        console.log("unfollow data", data);
+        return data.deletedCount ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_DELETED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_DELETE_FAILED));
     }
 
 

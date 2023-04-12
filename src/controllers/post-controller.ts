@@ -13,6 +13,7 @@ class PostController {
     create = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const body = await postValidation.create.validateAsync(req.body);
         const data = await postService.create(body);
+        console.log(data)
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_CREATED }) : next(ErrorHandler.serverError(Messages.POST.POST_CREATION_FAILED));
     }
 
@@ -30,7 +31,6 @@ class PostController {
 
     update = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
-        //@ts-ignore
         const {user} = req;
         const body = await postValidation.update.validateAsync(req.body);
         const post = await postService.findOne({ _id:id,userId:user.id });
@@ -40,7 +40,6 @@ class PostController {
         const data = await postService.update({ _id:id }, body);
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_UPDATED }) : next(ErrorHandler.serverError(Messages.POST.POST_UPDATE_FAILED));
     }
-
 
     destroy = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
