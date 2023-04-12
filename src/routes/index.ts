@@ -17,9 +17,14 @@ router.post('/all_post',auth,am(postController.findAll));
 //User
 router.get('/user',auth,am(userController.user))
 
-//follow
+//Follow
 router.post('/follow/:id',auth,am(userController.follow))
 router.post('/unfollow/:id',auth,am(userController.unfollow))
+
+//Like
+router.post('/like/:id',auth,am(postController.likePost))
+router.post('/unlike/:id',auth,am(postController.unLikePost))
+
 
 
 

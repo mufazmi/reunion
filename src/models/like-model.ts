@@ -1,8 +1,8 @@
-import {model, Schema, Document, Model } from 'mongoose';
+import {model, Schema, Document, Model, Types } from 'mongoose';
 
 export interface ILike extends Document {
   userId: Schema.Types.ObjectId;
-  postId: Schema.Types.ObjectId;
+  postId: Types.ObjectId;
 }
 
 const likeSchema: Schema<ILike> = new Schema<ILike>({
@@ -12,7 +12,7 @@ const likeSchema: Schema<ILike> = new Schema<ILike>({
   },
   postId :{
     type: Schema.Types.ObjectId,
-    ref: 'Pos',
+    ref: 'Post',
   }
 },{
 

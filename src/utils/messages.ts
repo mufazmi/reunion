@@ -41,6 +41,14 @@ class Messages{
       POST_UPDATE_FAILED: 'Failed To Updated Post',
       POST_DELATED: 'Post Deleted',
       POST_DELETE_FAILED: 'Failed To Delete Post',
+
+      LIKE_ALREADY:'You Already Liked This Post',
+      LIKE_SUCCESS:'Post Liked Successfully',
+      LIKE_FAILED : 'Oops..! Failed To Like This Post',
+
+      UNLIKE_ALREADY:'You Already Unliked This Post',
+      UNLIKE_SUCCESS:'Post Unliked Successfully',
+      UNLIKE_FAILED : 'Oops..! Failed To Unlike This Post'
     }
     
     static FOLLOW = {

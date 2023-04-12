@@ -8,6 +8,8 @@ import PostDto from "../dtos/post-dto";
 import { AuthRequest } from "../interfaces/interface";
 import { IPost } from "../models/post-model";
 import { Types } from "mongoose";
+import LikeModel, { ILike } from "../models/like-model";
+import likeService from "../services/like-service";
 
 
 class PostController {
@@ -26,7 +28,7 @@ class PostController {
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
-        const data = await postService.findOne({ _id:id });
+        const data = await postService.findOne({ _id: id });
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: data }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 
@@ -50,14 +52,59 @@ class PostController {
 
     destroy = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
-        const {id:userId} = req.user;
+        const { id: userId } = req.user;
 
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
-        const data = await postService.deleteOne({ _id:id,userId});
+        const data = await postService.deleteOne({ _id: id, userId });
         return data.deletedCount ? responseSuccess({ res: res, message: Messages.POST.POST_DELATED }) : next(ErrorHandler.notFound(Messages.POST.POST_DELETE_FAILED));
     }
+
+    likePost = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        const { id: userId } = req.user;
+        const { id } = req.params
+
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
+        const post: IPost | null = await postService.findOne({ _id: id, userId });
+
+        if (!post)
+            return next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND))
+
+        const payload: Partial<ILike> = {
+            userId: userId,
+            postId: new Types.ObjectId(id)
+        }
+
+        const isAlreadyLiked: ILike | null = await likeService.findOne(payload);
+
+        if (isAlreadyLiked)
+            return next(ErrorHandler.forbidden(Messages.POST.LIKE_ALREADY))
+
+        const data: ILike | null = await likeService.create(new LikeModel(payload));
+
+        return data ? responseSuccess({ res: res, message: Messages.POST.LIKE_SUCCESS }) : next(ErrorHandler.serverError(Messages.POST.LIKE_FAILED));
+    }
+
+    unLikePost = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        const { id: userId } = req.user;
+
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
+        const payload: Partial<ILike> = {
+            userId: userId,
+            postId: new Types.ObjectId(id)
+        }
+
+        const data = await likeService.deleteOne(payload);
+
+        return data.deletedCount ? responseSuccess({ res: res, message: Messages.POST.UNLIKE_SUCCESS }) : next(ErrorHandler.serverError(Messages.POST.UNLIKE_FAILED));
+    }
+
 }
 
 export default new PostController
