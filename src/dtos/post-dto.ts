@@ -1,5 +1,5 @@
 
-class ProductDto {
+class PostDto {
     id;
     title;
     desc;
@@ -11,4 +11,4 @@ class ProductDto {
     }
 }
 
-export default ProductDto
+export default PostDto

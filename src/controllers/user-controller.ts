@@ -45,7 +45,7 @@ class UserController {
             return next(ErrorHandler.forbidden(Messages.USER.FOLLOW_ALREADY))
 
         const data: IFollow | null = await followService.create(new FollowModel(payload));
-        console.log("Follow Data is", data);
+
         return data ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_CREATED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_CREATION_FAILED));
     }
 
@@ -64,7 +64,6 @@ class UserController {
 
         const data = await followService.deleteOne(payload);
 
-        console.log("unfollow data", data);
         return data.deletedCount ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_DELETED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_DELETE_FAILED));
     }
 

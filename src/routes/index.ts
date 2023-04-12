@@ -11,7 +11,7 @@ const router = express.Router();
 router.use('/authenticate', authRoute);
 
 //Post
-router.use('/posts',postRoute);
+router.use('/posts',auth,postRoute);
 router.post('/all_post',auth,am(postController.findAll));
 
 //User
