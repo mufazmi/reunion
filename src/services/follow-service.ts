@@ -8,6 +8,8 @@ class FollowService {
 
     findOne = async (filter: any) => await FollowModel.findOne(filter);
 
+    deleteOne = async (filter: any) => await FollowModel.deleteOne(filter);
+
 }
 
 export default new FollowService;

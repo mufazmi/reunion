@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
+
 export interface IFollow extends Document {
   fromUser: Schema.Types.ObjectId;
   toUser: Types.ObjectId;

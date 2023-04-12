@@ -49,7 +49,7 @@ class Messages{
       FOLLOW_FOUND: 'Followers Found',
       FOLLOW_NOT_FOUND: 'No Followers Found',
       FOLLOW_DELETED: 'UnFollowed Successfully',
-      FOLLOW_DELETE_FAILED: 'Failed TO Unfollow',
+      FOLLOW_DELETE_FAILED: 'Already UnFollowed',
     }
 
 }

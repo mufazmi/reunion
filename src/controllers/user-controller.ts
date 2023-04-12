@@ -10,11 +10,11 @@ import userService from "../services/user-service";
 import UserDto from "../dtos/user-dto";
 
 
-class FollowController {
+class UserController {
 
     user = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.user;
-        const data = await userService.findOne({ _id:id });
+        const data = await userService.findOne({ _id: id });
         return data ? responseSuccess({ res: res, message: Messages.USER.FOUND, data: new UserDto(data) }) : next(ErrorHandler.notFound(Messages.USER.FOUND));
     }
 
@@ -24,6 +24,11 @@ class FollowController {
 
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
+        const user = await userService.findOne({ _id: id});
+
+        if (!user)
+            return next(ErrorHandler.notFound(Messages.USER.NOT_FOUND))
 
         const payload: Partial<IFollow> = {
             fromUser: userId,
@@ -44,18 +49,23 @@ class FollowController {
     }
 
 
-    // unfollow = async (req: AuthRequest, res: Response, next: NextFunction) => {
-    //     const { id } = req.params;
-    //     const { user } = req;
-    //     const post = await postService.findOne({ _id: id, userId: user.id });
-    //     if (!post)
-    //         return next(ErrorHandler.notFound(Messages.FOLLOW.FOLLOW_NOT_FOUND))
+    unfollow = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        const { id:userId } = req.user;
+        
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
-    //     const data = await postService.update({ _id: id }, body);
-    //     return data ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_UPDATED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_UPDATE_FAILED));
-    // }
+        const payload: Partial<IFollow> = {
+            fromUser: userId,
+            toUser: new Types.ObjectId(id)
+        }
+
+        const data = await followService.deleteOne(payload);
+        return data ? responseSuccess({ res: res, message: Messages.FOLLOW.FOLLOW_DELETED }) : next(ErrorHandler.serverError(Messages.FOLLOW.FOLLOW_DELETE_FAILED));
+    }
 
 
 }
 
-export default new FollowController
+export default new UserController
