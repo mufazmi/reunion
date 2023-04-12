@@ -9,6 +9,7 @@ import { Types } from "mongoose";
 import CommentModel, { IComment } from "../models/comment-model";
 import { IPost } from "../models/post-model";
 import postService from "../services/post-service";
+import CommentDto from "../dtos/comment-dto";
 
 
 class CommentController {
@@ -35,7 +36,7 @@ class CommentController {
 
         const data: IComment | null = await commentService.create(new CommentModel(payload));
 
-        return data ? responseSuccess({ res: res, message: Messages.POST.COMMENT_SUCCESS }) : next(ErrorHandler.serverError(Messages.POST.COMMENT_FAILED));
+        return data ? responseSuccess({ res: res, message: Messages.POST.COMMENT_SUCCESS,data:new CommentDto(data) }) : next(ErrorHandler.serverError(Messages.POST.COMMENT_FAILED));
     }
 
 
