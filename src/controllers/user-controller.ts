@@ -15,8 +15,18 @@ class UserController {
 
     user = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.user;
-        const data = await userService.findOne({ _id: id });
-        return data ? responseSuccess({ res: res, message: Messages.USER.FOUND, data: new UserDto(data) }) : next(ErrorHandler.notFound(Messages.USER.FOUND));
+        const data : IUser | null = await userService.findOne({ _id: id });
+
+        const followers = await userService.findCount({ toUser: id });
+
+        const followings = await userService.findCount({ fromUser: id });
+
+        const response = new UserDto(data!)
+        
+        response.followers = followers;
+        response.followings = followings;
+
+        return data ? responseSuccess({ res: res, message: Messages.USER.FOUND, data:  response}) : next(ErrorHandler.notFound(Messages.USER.FOUND));
     }
 
     follow = async (req: AuthRequest, res: Response, next: NextFunction) => {

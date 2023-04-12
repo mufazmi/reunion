@@ -9,6 +9,8 @@ class UserService {
 
     findOne = async (filter: any) => await UserModel.findOne(filter);
 
+    findCount = async (filter: any) => await UserModel.countDocuments(filter);
+
     verifyPassword = async (password: string, hashPassword: string) => await bcrypt.compare(password, hashPassword);
 
 }

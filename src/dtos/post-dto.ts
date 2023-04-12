@@ -1,11 +1,12 @@
+import { IPost } from "../models/post-model";
 
 class PostDto {
-    id;
-    title;
-    desc;
-    createdAt;
+    id : string;
+    title: string;
+    desc: string;
+    createdAt: string;
 
-    constructor(data:any){
+    constructor(data:IPost){
         this.id = data.id
         this.title = data.title
         this.desc = data.desc
