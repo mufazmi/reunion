@@ -8,13 +8,14 @@ import ProductDto from "../dtos/post-dto";
 import { AuthRequest } from "../interfaces/interface";
 import PostDto from "../dtos/post-dto";
 import { IPost } from "../models/post-model";
+import { Types } from "mongoose";
 
 
 class PostController {
 
     create = async (req: AuthRequest, res: Response, next: NextFunction) => {
-        const {id} = req.user;
-        const body : IPost = await postValidation.create.validateAsync(req.body);
+        const { id } = req.user;
+        const body: IPost = await postValidation.create.validateAsync(req.body);
         body.userId = id;
         const data = await postService.create(body);
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_CREATED, data: new PostDto(data) }) : next(ErrorHandler.serverError(Messages.POST.POST_CREATION_FAILED));
@@ -22,7 +23,11 @@ class PostController {
 
     findOne = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
-        const data = await postService.findAll({ id });
+
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+
+        const data = await postService.findOne({ _id:id });
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: data }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 
@@ -46,8 +51,11 @@ class PostController {
 
     destroy = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
-        const data = await postService.deleteOne({ id });
-        return data ? responseSuccess({ res: res, message: Messages.POST.POST_DELATED }) : next(ErrorHandler.notFound(Messages.POST.POST_DELETE_FAILED));
+        const {id:userId} = req.user;
+        if (!Types.ObjectId.isValid(id))
+            return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
+        const data = await postService.deleteOne({ _id:id,userId});
+        return data.deletedCount ? responseSuccess({ res: res, message: Messages.POST.POST_DELATED }) : next(ErrorHandler.notFound(Messages.POST.POST_DELETE_FAILED));
     }
 }
 
