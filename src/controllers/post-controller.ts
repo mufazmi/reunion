@@ -1,33 +1,34 @@
-import { Request, Response, NextFunction } from "express"
+import { Response, NextFunction } from "express"
 import postValidation from "../validations/post-validation"
 import responseSuccess from "../utils/response";
 import ErrorHandler from "../utils/error-handler";
 import Messages from '../utils/messages';
 import postService from "../services/post-service";
 import ProductDto from "../dtos/post-dto";
+import { AuthRequest } from "../interfaces/interface";
 
 
 class PostController {
 
-    create = async (req: Request, res: Response, next: NextFunction) => {
+    create = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const body = await postValidation.create.validateAsync(req.body);
         const data = await postService.create(body);
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_CREATED }) : next(ErrorHandler.serverError(Messages.POST.POST_CREATION_FAILED));
     }
 
-    findOne = async (req: Request, res: Response, next: NextFunction) => {
+    findOne = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
         const data = await postService.findAll({ id });
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: data }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 
-    findAll = async (req: Request, res: Response, next: NextFunction) => {
+    findAll = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const data = await postService.findAll({});
         const response = data.map((e)=> new ProductDto(e));
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: response }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
     }
 
-    update = async (req: Request, res: Response, next: NextFunction) => {
+    update = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
         //@ts-ignore
         const {user} = req;
@@ -41,7 +42,7 @@ class PostController {
     }
 
 
-    destroy = async (req: Request, res: Response, next: NextFunction) => {
+    destroy = async (req: AuthRequest, res: Response, next: NextFunction) => {
         const { id } = req.params;
         const data = await postService.deleteOne({id});
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_DELATED }) : next(ErrorHandler.notFound(Messages.POST.POST_DELETE_FAILED));

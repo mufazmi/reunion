@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IFollow extends Document {
   fromUser: Schema.Types.ObjectId;
-  toUser: Schema.Types.ObjectId;
+  toUser: Types.ObjectId;
 }
 
 const followSchema: Schema<IFollow> = new Schema<IFollow>({

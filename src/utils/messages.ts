@@ -2,6 +2,9 @@
 
 class Messages{
 
+   static DB = {
+      INVALID_ID : 'Invalid Id'
+   }
 
     static SERVER = {
         NOT_FOUND: "Oops..! It's 404",
@@ -23,7 +26,10 @@ class Messages{
      }
      
      static USER = {
-        NOT_FOUND : 'User Not Found'
+        NOT_FOUND : 'User Not Found',
+        FOUND : 'User Found',
+        FOLLOW_ALREADY : 'You are already following',
+        FOLLOW_SELF : "You can't follow your self"
      }
 
      static POST = {
@@ -37,6 +43,14 @@ class Messages{
       POST_DELETE_FAILED: 'Failed To Delete Post',
     }
     
+    static FOLLOW = {
+      FOLLOW_CREATED: 'Followed Successfully',
+      FOLLOW_CREATION_FAILED: 'Failed To Follow',
+      FOLLOW_FOUND: 'Followers Found',
+      FOLLOW_NOT_FOUND: 'No Followers Found',
+      FOLLOW_DELETED: 'UnFollowed Successfully',
+      FOLLOW_DELETE_FAILED: 'Failed TO Unfollow',
+    }
 
 }
 
