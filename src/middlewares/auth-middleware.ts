@@ -3,7 +3,6 @@ import tokenService from '../services/token-service';
 import ErrorHandler from '../utils/error-handler';
 import { TokenExpiredError } from 'jsonwebtoken';
 import Messages from '../utils/messages';
-import { AuthRequest } from '../interfaces/interface';
 
 const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authorization = req.headers.authorization;
