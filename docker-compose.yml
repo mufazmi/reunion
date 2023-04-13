@@ -1,0 +1,26 @@
+version: '3.9'
+
+services: 
+  #MongoDb
+  mongo_db:
+    image: mongo:latest
+    restart: always
+    volumes: 
+      - mongo_db:/data/db
+
+
+  # App
+  app:
+    build: .
+    ports:
+      - 4000:3000
+    environment:
+      PORT: 3000
+      MONGODB_URL: mongodb://mongo_db:27017
+      DB_NAME: reunion
+    depends_on:
+      - mongo_db
+
+
+  volume:
+    mongo_db: {}

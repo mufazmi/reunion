@@ -22,43 +22,29 @@ const auth_validation_1 = __importDefault(require("../validations/auth-validatio
 class AuthController {
     constructor() {
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const body = yield auth_validation_1.default.login.validateAsync(req.body);
-                const user = yield user_service_1.default.findOne({ email: body.email });
-                if (!user)
-                    return next(error_handler_1.default.notFound(messages_1.default.USER.NOT_FOUND));
-                const isValidPassword = yield user_service_1.default.verifyPassword(body.password, user.password);
-                if (!isValidPassword)
-                    return next(error_handler_1.default.unAuthorized(messages_1.default.AUTH.PASSWORD_INVALID));
-                const payload = {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                };
-                const { accessToken, refreshToken } = token_service_1.default.generateToken(payload);
-                res.cookie('access', accessToken, {
-                    maxAge: 1000 * 60 * 60 * 24 * 30,
-                });
-                res.cookie('refresh', refreshToken, {
-                    maxAge: 1000 * 60 * 60 * 24 * 30,
-                });
-                const data = new user_dto_1.default(user);
-                //@ts-ignore
-                data.accessToken = accessToken;
-                //@ts-ignore
-                data.refreshToken = refreshToken;
-                res.json({ success: true, message: messages_1.default.AUTH.AUTH_SUCCESS, data });
-            }
-            catch (error) {
-                next(error);
-            }
+            const body = yield auth_validation_1.default.login.validateAsync(req.body);
+            const user = yield user_service_1.default.findOne({ email: body.email });
+            if (!user)
+                return next(error_handler_1.default.notFound(messages_1.default.USER.NOT_FOUND));
+            const isValidPassword = yield user_service_1.default.verifyPassword(body.password, user.password);
+            if (!isValidPassword)
+                return next(error_handler_1.default.unAuthorized(messages_1.default.AUTH.PASSWORD_INVALID));
+            const payload = {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            };
+            const { accessToken, refreshToken } = token_service_1.default.generateToken(payload);
+            const data = new user_dto_1.default(user);
+            //@ts-ignore
+            data.accessToken = accessToken;
+            //@ts-ignore
+            data.refreshToken = refreshToken;
+            res.json({ success: true, message: messages_1.default.AUTH.AUTH_SUCCESS, data });
         });
         this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const body = yield auth_validation_1.default.register.validateAsync(req.body);
             const data = yield user_service_1.default.create(body);
-            if (!data) {
-                return next(error_handler_1.default.serverError('Failed To Create An Account'));
-            }
             return data ? (0, response_1.default)({ res: res, message: messages_1.default.AUTH.REGISTER_SUCCESS }) : next(error_handler_1.default.serverError(messages_1.default.AUTH.REGISTER_FAILED));
         });
     }

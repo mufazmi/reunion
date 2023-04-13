@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const dbConnection = () => {
     const dbUrl = process.env.MONGODB_URI || '';
-    console.log({ dbUrl });
     mongoose_1.default.connect(dbUrl)
         .then(() => console.log('Database Connection Success'))
         .catch((err) => console.log(`Connection With Database Failed. Reason ${err.message}`));
