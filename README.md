@@ -108,3 +108,12 @@ docker build -t reunion .
 `docker run -p 3000:3000 reunion
 ```
 The app should now be accessible at `http://localhost:3000`
+
+
+## POSTMAN - Collection
+
+https://www.postman.com/mufazmi/workspace/reunion/overview
+
+## Deployed Api 
+
+https://reunion.herokuapp.com/

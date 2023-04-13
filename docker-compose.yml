@@ -5,8 +5,6 @@ services:
   mongo_db:
     image: mongo:latest
     restart: always
-    volumes: 
-      - mongo_db:/data/db
 
 
   # App
@@ -20,7 +18,3 @@ services:
       DB_NAME: reunion
     depends_on:
       - mongo_db
-
-
-  volume:
-    mongo_db: {}
