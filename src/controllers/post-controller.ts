@@ -30,8 +30,14 @@ class PostController {
         if (!Types.ObjectId.isValid(id))
             return next(ErrorHandler.badRequest(Messages.DB.INVALID_ID))
 
-        const data = await postService.findOne({ _id: id });
-        return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: data }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
+        const data: IPost | null = await postService.findOne({ _id: id });
+        if (!data)
+            return next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
+        const response = new PostDto(data);
+
+        response.likes = await likeService.findCount({ postId: id });
+        response.comments = (await commentService.findAll({ postId: id })).map((f) => new CommentDto(f));
+        return responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: response })
     }
 
     findAll = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -40,10 +46,10 @@ class PostController {
         const postPromise = data.map(async (e) => {
             const post = new PostDto(e);
             post.likes = await likeService.findCount({ postId: e._id });
-            post.comments = (await commentService.findAll({ postId: e._id })).map((f)=> new CommentDto(f));
+            post.comments = (await commentService.findAll({ postId: e._id })).map((f) => new CommentDto(f));
             return post;
         })
-        
+
         const response = await Promise.all(postPromise);
 
         return data ? responseSuccess({ res: res, message: Messages.POST.POST_FOUND, data: response }) : next(ErrorHandler.notFound(Messages.POST.POST_NOT_FOUND));
